@@ -39,8 +39,8 @@ const router = createRouter({
     ]
 })
 
-// Updated navigation guard
-router.beforeEach((to, from, next) => {
+// Updated navigation guard to fix the TypeScript error
+router.beforeEach((to, _from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     const requiredRole = to.matched.find(record => record.meta.role)?.meta.role
     const token = localStorage.getItem('token')
@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
     if (requiresAuth && !token) {
         next('/login')
     } else if (requiredRole && userRole !== requiredRole) {
-        next('/dashboard') // Redirect to default dashboard if role doesn't match
+        next('/dashboard')
     } else {
         next()
     }
