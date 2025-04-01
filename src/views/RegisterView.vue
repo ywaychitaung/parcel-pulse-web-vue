@@ -128,6 +128,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
+import { AUTH_API } from '@/constants/api'
 
 const router = useRouter()
 const name = ref('')
@@ -144,22 +145,19 @@ const togglePassword = () => {
 
 const register = async () => {
     try {
-        const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/auth/register`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: name.value,
-                    username: username.value,
-                    email: email.value,
-                    password: password.value,
-                    roleId: parseInt(roleId.value)
-                })
-            }
-        )
+        const response = await fetch(AUTH_API.REGISTER, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name.value,
+                username: username.value,
+                email: email.value,
+                password: password.value,
+                roleId: parseInt(roleId.value)
+            })
+        })
 
         const data = await response.json()
 
