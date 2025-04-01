@@ -1,6 +1,6 @@
 <template>
     <AuthLayout>
-        <div class="register-page p-6">
+        <div class="p-6">
             <h1 class="text-2xl font-bold mb-4 text-dark">Register</h1>
             <div class="register-form">
                 <div class="mb-4">
@@ -8,7 +8,8 @@
                         for="name"
                         class="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        <i class="bi bi-person-fill mr-2 text-[#0ea5e9]"></i>Full Name
+                        <i class="bi bi-person-fill mr-2 text-[#0ea5e9]"></i
+                        >Full Name
                     </label>
                     <input
                         type="text"
@@ -23,7 +24,8 @@
                         for="email"
                         class="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        <i class="bi bi-envelope-fill mr-2 text-[#0ea5e9]"></i>Email
+                        <i class="bi bi-envelope-fill mr-2 text-[#0ea5e9]"></i
+                        >Email
                     </label>
                     <input
                         type="email"
@@ -38,7 +40,8 @@
                         for="username"
                         class="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        <i class="bi bi-person-circle mr-2 text-[#0ea5e9]"></i>Username
+                        <i class="bi bi-person-circle mr-2 text-[#0ea5e9]"></i
+                        >Username
                     </label>
                     <input
                         type="text"
@@ -53,7 +56,8 @@
                         for="password"
                         class="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        <i class="bi bi-lock-fill mr-2 text-[#0ea5e9]"></i>Password
+                        <i class="bi bi-lock-fill mr-2 text-[#0ea5e9]"></i
+                        >Password
                     </label>
                     <div class="relative">
                         <input

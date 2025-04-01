@@ -10,7 +10,7 @@
             </h2>
         </div>
 
-        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md mx-8">
             <div class="card">
                 <slot></slot>
             </div>
