@@ -70,20 +70,65 @@
     </AuthLayout>
 </template>
 
+<!-- Add error message display -->
+<div v-if="error" class="mb-4 text-red-500 text-sm text-center">
+    {{ error }}
+</div>
+
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 
+const router = useRouter()
 const usernameOrEmail = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const error = ref('')
 
 const togglePassword = () => {
     showPassword.value = !showPassword.value
 }
 
-const login = () => {
-    // Implement login logic here
-    console.log('Logging in with:', usernameOrEmail.value, password.value)
+const login = async () => {
+    try {
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/login`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    usernameOrEmail: usernameOrEmail.value,
+                    password: password.value
+                })
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Login failed')
+        }
+
+        // Store the token and role
+        localStorage.setItem('token', data.accessToken)
+        localStorage.setItem('userRole', data.role)
+
+        // Redirect based on role
+        switch (data.role) {
+            case 'ADMIN':
+                router.push('/admin/dashboard')
+                break
+            case 'COURIER':
+                router.push('/courier/dashboard')
+                break
+            default:
+                router.push('/dashboard')
+        }
+    } catch (err: any) {
+        error.value = err.message || 'Login failed'
+    }
 }
 </script>

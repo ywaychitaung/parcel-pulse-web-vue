@@ -23,8 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# env files
-.env*
+# env file
+.env
 
 # lock files
 yarn.lock

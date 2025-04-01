@@ -25,21 +25,31 @@ const router = createRouter({
             component: () => import('@/views/RegisterView.vue')
         },
         {
-            path: '/dashboard',
-            name: 'dashboard',
-            component: () => import('@/views/DashboardView.vue'),
-            meta: { requiresAuth: true }
+            path: '/admin/dashboard',
+            name: 'adminDashboard',
+            component: () => import('@/views/admin/DashboardView.vue'),
+            meta: { requiresAuth: true, role: 'ADMIN' }
+        },
+        {
+            path: '/courier/dashboard',
+            name: 'courierDashboard',
+            component: () => import('@/views/courier/DashboardView.vue'),
+            meta: { requiresAuth: true, role: 'COURIER' }
         }
     ]
 })
 
-// Navigation guard for protected routes
-router.beforeEach((to, _from, next) => {
-    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
-    const isAuthenticated = localStorage.getItem('token')
+// Updated navigation guard
+router.beforeEach((to, from, next) => {
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+    const requiredRole = to.matched.find(record => record.meta.role)?.meta.role
+    const token = localStorage.getItem('token')
+    const userRole = localStorage.getItem('userRole')
 
-    if (requiresAuth && !isAuthenticated) {
+    if (requiresAuth && !token) {
         next('/login')
+    } else if (requiredRole && userRole !== requiredRole) {
+        next('/dashboard') // Redirect to default dashboard if role doesn't match
     } else {
         next()
     }

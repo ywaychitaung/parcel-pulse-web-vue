@@ -51,6 +51,23 @@
                         placeholder="Choose a username"
                     />
                 </div>
+                <div class="mb-4">
+                    <label
+                        for="role"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                        <i class="bi bi-person-badge mr-2 text-[#0ea5e9]"></i
+                        >Register as
+                    </label>
+                    <select
+                        id="role"
+                        v-model="roleId"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0ea5e9] focus:border-[#0ea5e9]"
+                    >
+                        <option value="1">User</option>
+                        <option value="3">Courier</option>
+                    </select>
+                </div>
                 <div class="mb-6">
                     <label
                         for="password"
@@ -109,26 +126,59 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 
+const router = useRouter()
 const name = ref('')
 const email = ref('')
 const username = ref('')
 const password = ref('')
+const roleId = ref('1')
 const showPassword = ref(false)
+const error = ref('')
 
 const togglePassword = () => {
     showPassword.value = !showPassword.value
 }
 
-const register = () => {
-    // Implement registration logic here
-    console.log(
-        'Registering with:',
-        name.value,
-        email.value,
-        username.value,
-        password.value
-    )
+const register = async () => {
+    try {
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/register`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name.value,
+                    username: username.value,
+                    email: email.value,
+                    password: password.value,
+                    roleId: parseInt(roleId.value)
+                })
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Registration failed')
+        }
+
+        // Store the token and role
+        localStorage.setItem('token', data.accessToken)
+        localStorage.setItem('userRole', data.role)
+
+        // Redirect based on role
+        if (data.role === 'COURIER') {
+            router.push('/courier/dashboard')
+        } else {
+            router.push('/dashboard')
+        }
+    } catch (err: any) {
+        error.value = err.message || 'Registration failed'
+    }
 }
 </script>
