@@ -2,6 +2,10 @@
     <AuthLayout>
         <div class="login-page p-6">
             <h1 class="text-2xl font-bold mb-4 text-dark">Login</h1>
+            <!-- Add error message display -->
+            <div v-if="error" class="mb-4 text-red-500 text-sm text-center">
+                {{ error }}
+            </div>
             <div class="login-form">
                 <div class="mb-4">
                     <label
@@ -69,11 +73,6 @@
         </div>
     </AuthLayout>
 </template>
-
-<!-- Add error message display -->
-<div v-if="error" class="mb-4 text-red-500 text-sm text-center">
-    {{ error }}
-</div>
 
 <script setup lang="ts">
 import { ref } from 'vue'
