@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { parcelService } from '@/services/parcelService'
 import { userService } from '@/services/userService'
 import type { Parcel } from '@/types/parcel'
 
+const router = useRouter()
 const parcels = ref<Parcel[]>([])
 const loading = ref(true)
 
@@ -14,6 +16,11 @@ const stats = ref({
     delivered: 0,
     pending: 0
 })
+
+// Add navigation method inside script block
+const navigateToParcelManagement = () => {
+    router.push('/admin/parcels')
+}
 
 onMounted(async () => {
     try {
@@ -102,9 +109,10 @@ onMounted(async () => {
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold">Recent Parcels</h2>
                     <button
+                        @click="navigateToParcelManagement"
                         class="bg-[#0ea5e9] text-white px-4 py-2 rounded-md hover:bg-[#0284c7]"
                     >
-                        <i class="bi bi-plus-lg mr-2"></i>Add New Parcel
+                        <i class="bi bi-plus-lg mr-2"></i>Parcel Management
                     </button>
                 </div>
 

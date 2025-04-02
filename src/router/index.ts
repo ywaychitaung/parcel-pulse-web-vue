@@ -1,42 +1,50 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import type { RouteRecordRaw } from 'vue-router'
+
+const routes: RouteRecordRaw[] = [
+    {
+        path: '/',
+        name: 'home',
+        component: () => import('@/views/HomeView.vue')
+    },
+    {
+        path: '/track',
+        name: 'track',
+        component: () => import('@/views/TrackingView.vue')
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import('@/views/LoginView.vue')
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: () => import('@/views/RegisterView.vue')
+    },
+    {
+        path: '/admin/dashboard',
+        name: 'adminDashboard',
+        component: () => import('@/views/admin/DashboardView.vue'),
+        meta: { requiresAuth: true, role: 'ADMIN' }
+    },
+    {
+        path: '/admin/parcels',
+        name: 'admin-parcels',
+        component: () => import('@/views/admin/ParcelManagementView.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/courier/dashboard',
+        name: 'courierDashboard',
+        component: () => import('@/views/courier/DashboardView.vue'),
+        meta: { requiresAuth: true, role: 'COURIER' }
+    }
+]
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/',
-            name: 'home',
-            component: HomeView
-        },
-        {
-            path: '/track',
-            name: 'track',
-            component: () => import('@/views/TrackingView.vue')
-        },
-        {
-            path: '/login',
-            name: 'login',
-            component: () => import('@/views/LoginView.vue')
-        },
-        {
-            path: '/register',
-            name: 'register',
-            component: () => import('@/views/RegisterView.vue')
-        },
-        {
-            path: '/admin/dashboard',
-            name: 'adminDashboard',
-            component: () => import('@/views/admin/DashboardView.vue'),
-            meta: { requiresAuth: true, role: 'ADMIN' }
-        },
-        {
-            path: '/courier/dashboard',
-            name: 'courierDashboard',
-            component: () => import('@/views/courier/DashboardView.vue'),
-            meta: { requiresAuth: true, role: 'COURIER' }
-        }
-    ]
+    routes
 })
 
 // Updated navigation guard to fix the TypeScript error
