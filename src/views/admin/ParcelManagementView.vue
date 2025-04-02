@@ -56,31 +56,51 @@ onMounted(() => {
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                            ID
+                        </th>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
                             Tracking Number
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
                             Sender
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
                             Receiver
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
                             Status
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
                             Actions
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-if="loading">
-                        <td colspan="5" class="px-6 py-4 text-center">Loading...</td>
+                        <td colspan="5" class="px-6 py-4 text-center">
+                            Loading...
+                        </td>
                     </tr>
                     <tr v-else-if="parcels.length === 0">
-                        <td colspan="5" class="px-6 py-4 text-center">No parcels found</td>
+                        <td colspan="5" class="px-6 py-4 text-center">
+                            No parcels found
+                        </td>
                     </tr>
                     <tr v-for="parcel in parcels" :key="parcel.id">
+                        <td class="px-6 py-4">{{ parcel.id }}</td>
                         <td class="px-6 py-4">{{ parcel.trackingNumber }}</td>
                         <td class="px-6 py-4">{{ parcel.senderName }}</td>
                         <td class="px-6 py-4">{{ parcel.receiverName }}</td>
@@ -88,9 +108,12 @@ onMounted(() => {
                             <span
                                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                 :class="{
-                                    'bg-yellow-100 text-yellow-800': parcel.status === 'PENDING',
-                                    'bg-blue-100 text-blue-800': parcel.status === 'IN_TRANSIT',
-                                    'bg-green-100 text-green-800': parcel.status === 'DELIVERED'
+                                    'bg-yellow-100 text-yellow-800':
+                                        parcel.status === 'PENDING',
+                                    'bg-blue-100 text-blue-800':
+                                        parcel.status === 'IN_TRANSIT',
+                                    'bg-green-100 text-green-800':
+                                        parcel.status === 'DELIVERED'
                                 }"
                             >
                                 {{ parcel.status }}

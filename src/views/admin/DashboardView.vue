@@ -183,6 +183,11 @@ onMounted(async () => {
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
+                                    ID
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
                                     Tracking Number
                                 </th>
                                 <th
@@ -214,6 +219,9 @@ onMounted(async () => {
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="parcel in parcels" :key="parcel.id">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ parcel.id }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ parcel.trackingNumber }}
                                 </td>
@@ -268,7 +276,7 @@ onMounted(async () => {
 
         <!-- Edit Modal -->
         <div
-            v-if="showEditModal"
+            v-if="showEditModal && selectedParcel"
             class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
         >
             <div

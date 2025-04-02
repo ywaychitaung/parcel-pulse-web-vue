@@ -151,6 +151,7 @@ const handleSubmit = async () => {
         } else {
             await parcelService.createParcel(parcelData.value)
         }
+        // Redirect to parcel management page
         router.push('/admin/parcels')
     } catch (error) {
         console.error('Failed to save parcel:', error)
