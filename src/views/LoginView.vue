@@ -79,6 +79,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { AUTH_API } from '@/constants/api'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const usernameOrEmail = ref('')
@@ -89,6 +90,8 @@ const error = ref('')
 const togglePassword = () => {
     showPassword.value = !showPassword.value
 }
+
+const auth = useAuthStore()
 
 const login = async () => {
     try {
@@ -109,20 +112,16 @@ const login = async () => {
             throw new Error(data.message || 'Login failed')
         }
 
-        // Store the token and role
-        localStorage.setItem('token', data.accessToken)
-        localStorage.setItem('userRole', data.role)
+        // Use auth store to set token and role
+        auth.setAuth(data.accessToken, data.role)
 
         // Redirect based on role
-        switch (data.role) {
-            case 'ADMIN':
-                router.push('/admin/dashboard')
-                break
-            case 'COURIER':
-                router.push('/courier/dashboard')
-                break
-            default:
-                router.push('/dashboard')
+        if (data.role === 'ADMIN') {
+            router.push('/admin/dashboard')
+        } else if (data.role === 'COURIER') {
+            router.push('/courier/dashboard')
+        } else {
+            router.push('/dashboard')
         }
     } catch (err: any) {
         error.value = err.message || 'Login failed'

@@ -41,8 +41,9 @@ const router = createRouter({
 
 // Updated navigation guard to fix the TypeScript error
 router.beforeEach((to, _from, next) => {
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-    const requiredRole = to.matched.find(record => record.meta.role)?.meta.role
+    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+    const requiredRole = to.matched.find((record) => record.meta.role)?.meta
+        .role
     const token = localStorage.getItem('token')
     const userRole = localStorage.getItem('userRole')
 

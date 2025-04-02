@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '@/utils/axios'
 import { useAuthStore } from '@/stores/auth'
 import type { Parcel } from '@/types/parcel'
 import { PARCEL_API } from '@/constants/api'
