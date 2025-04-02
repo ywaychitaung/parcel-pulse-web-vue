@@ -37,12 +37,9 @@ export const parcelService = {
         return response.data
     },
 
-    async updateParcel(
-        id: number,
-        parcelData: Partial<Parcel>
-    ): Promise<Parcel> {
+    async updateParcel(id: number, parcel: Partial<Parcel>): Promise<Parcel> {
         const auth = useAuthStore()
-        const response = await axios.put(PARCEL_API.UPDATE(id), parcelData, {
+        const response = await axios.put(PARCEL_API.UPDATE(id), parcel, {
             headers: { Authorization: `Bearer ${auth.token}` }
         })
         return response.data
@@ -63,6 +60,14 @@ export const parcelService = {
         const auth = useAuthStore()
         const response = await axios.get(PARCEL_API.SEARCH, {
             params,
+            headers: { Authorization: `Bearer ${auth.token}` }
+        })
+        return response.data
+    },
+
+    async getParcel(id: number): Promise<Parcel> {
+        const auth = useAuthStore()
+        const response = await axios.get(PARCEL_API.GET(id), {
             headers: { Authorization: `Bearer ${auth.token}` }
         })
         return response.data

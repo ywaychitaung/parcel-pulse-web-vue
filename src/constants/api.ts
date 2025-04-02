@@ -14,6 +14,7 @@ export const USER_API = {
 export const PARCEL_API = {
     TRACK: (trackingNumber: string) =>
         `${API_BASE_URL}/api/parcels/tracking/${trackingNumber}`,
+    GET: (id: number) => `${API_BASE_URL}/api/parcels/${id}`,
     GET_ALL: `${API_BASE_URL}/api/parcels`,
     GET_USER_PARCELS: `${API_BASE_URL}/api/parcels/user`,
     CREATE: `${API_BASE_URL}/api/parcels`,

@@ -8,6 +8,8 @@ import type { Parcel } from '@/types/parcel'
 const router = useRouter()
 const parcels = ref<Parcel[]>([])
 const loading = ref(true)
+const showEditModal = ref(false)
+const selectedParcel = ref<Parcel | null>(null)
 
 const stats = ref({
     totalUsers: 0,
@@ -20,6 +22,41 @@ const stats = ref({
 // Add navigation method inside script block
 const navigateToParcelManagement = () => {
     router.push('/admin/parcels')
+}
+
+// Edit parcel
+const editParcel = (parcel: Parcel) => {
+    selectedParcel.value = { ...parcel }
+    showEditModal.value = true
+}
+
+// Delete parcel
+const deleteParcel = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this parcel?')) return
+    
+    try {
+        await parcelService.deleteParcel(id)
+        parcels.value = parcels.value.filter(p => p.id !== id)
+        stats.value.totalParcels--
+    } catch (error) {
+        console.error('Failed to delete parcel:', error)
+    }
+}
+
+// Save edited parcel
+const saveParcel = async () => {
+    if (!selectedParcel.value) return
+    
+    try {
+        await parcelService.updateParcel(selectedParcel.value.id, selectedParcel.value)
+        const index = parcels.value.findIndex(p => p.id === selectedParcel.value?.id)
+        if (index !== -1) {
+            parcels.value[index] = selectedParcel.value
+        }
+        showEditModal.value = false
+    } catch (error) {
+        console.error('Failed to update parcel:', error)
+    }
 }
 
 onMounted(async () => {
@@ -187,11 +224,13 @@ onMounted(async () => {
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <button
+                                        @click="editParcel(parcel)"
                                         class="text-blue-600 hover:text-blue-900 mr-3"
                                     >
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <button
+                                        @click="deleteParcel(parcel.id)"
                                         class="text-red-600 hover:text-red-900"
                                     >
                                         <i class="bi bi-trash"></i>
@@ -205,3 +244,55 @@ onMounted(async () => {
         </div>
     </div>
 </template>
+
+<!-- Edit Modal -->
+<div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Parcel</h3>
+            <div class="mt-2 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <select
+                        v-model="selectedParcel.status"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="PENDING">Pending</option>
+                        <option value="IN_TRANSIT">In Transit</option>
+                        <option value="DELIVERED">Delivered</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Sender Name</label>
+                    <input
+                        type="text"
+                        v-model="selectedParcel.senderName"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Receiver Name</label>
+                    <input
+                        type="text"
+                        v-model="selectedParcel.receiverName"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-end space-x-3">
+            <button
+                @click="showEditModal = false"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            >
+                Cancel
+            </button>
+            <button
+                @click="saveParcel"
+                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+                Save
+            </button>
+        </div>
+    </div>
+</div>

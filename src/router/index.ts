@@ -35,6 +35,18 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
+        path: '/admin/parcels/create',
+        name: 'admin-parcels-create',
+        component: () => import('@/views/admin/ParcelEditView.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin/parcels/:id/edit',
+        name: 'admin-parcels-edit',
+        component: () => import('@/views/admin/ParcelEditView.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
         path: '/courier/dashboard',
         name: 'courierDashboard',
         component: () => import('@/views/courier/DashboardView.vue'),
