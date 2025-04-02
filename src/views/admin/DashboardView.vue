@@ -3,13 +3,21 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { parcelService } from '@/services/parcelService'
 import { userService } from '@/services/userService'
+import { useAuthStore } from '@/stores/auth'
 import type { Parcel } from '@/types/parcel'
 
 const router = useRouter()
+const auth = useAuthStore()
 const parcels = ref<Parcel[]>([])
 const loading = ref(true)
 const showEditModal = ref(false)
 const selectedParcel = ref<Parcel | null>(null)
+
+// Add logout handler
+const handleLogout = () => {
+    auth.clearAuth()
+    router.push('/login')
+}
 
 const stats = ref({
     totalUsers: 0,
@@ -33,10 +41,10 @@ const editParcel = (parcel: Parcel) => {
 // Delete parcel
 const deleteParcel = async (id: number) => {
     if (!confirm('Are you sure you want to delete this parcel?')) return
-    
+
     try {
         await parcelService.deleteParcel(id)
-        parcels.value = parcels.value.filter(p => p.id !== id)
+        parcels.value = parcels.value.filter((p) => p.id !== id)
         stats.value.totalParcels--
     } catch (error) {
         console.error('Failed to delete parcel:', error)
@@ -46,10 +54,15 @@ const deleteParcel = async (id: number) => {
 // Save edited parcel
 const saveParcel = async () => {
     if (!selectedParcel.value) return
-    
+
     try {
-        await parcelService.updateParcel(selectedParcel.value.id, selectedParcel.value)
-        const index = parcels.value.findIndex(p => p.id === selectedParcel.value?.id)
+        await parcelService.updateParcel(
+            selectedParcel.value.id,
+            selectedParcel.value
+        )
+        const index = parcels.value.findIndex(
+            (p) => p.id === selectedParcel.value?.id
+        )
         if (index !== -1) {
             parcels.value[index] = selectedParcel.value
         }
@@ -90,7 +103,17 @@ onMounted(async () => {
 <template>
     <div class="min-h-screen bg-gray-100">
         <div class="p-6">
-            <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
+            <!-- Add logout button next to the title -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+                <button
+                    @click="handleLogout"
+                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 flex items-center"
+                >
+                    <i class="bi bi-box-arrow-right mr-2"></i>
+                    Logout
+                </button>
+            </div>
 
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -242,57 +265,75 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
-    </div>
-</template>
 
-<!-- Edit Modal -->
-<div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Parcel</h3>
-            <div class="mt-2 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Status</label>
-                    <select
-                        v-model="selectedParcel.status"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        <!-- Edit Modal -->
+        <div
+            v-if="showEditModal"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+        >
+            <div
+                class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
+            >
+                <div class="mt-3">
+                    <h3
+                        class="text-lg font-medium leading-6 text-gray-900 mb-4"
                     >
-                        <option value="PENDING">Pending</option>
-                        <option value="IN_TRANSIT">In Transit</option>
-                        <option value="DELIVERED">Delivered</option>
-                    </select>
+                        Edit Parcel
+                    </h3>
+                    <div class="mt-2 space-y-4">
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-700"
+                                >Status</label
+                            >
+                            <select
+                                v-model="selectedParcel.status"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            >
+                                <option value="PENDING">Pending</option>
+                                <option value="IN_TRANSIT">In Transit</option>
+                                <option value="DELIVERED">Delivered</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-700"
+                                >Sender Name</label
+                            >
+                            <input
+                                type="text"
+                                v-model="selectedParcel.senderName"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-700"
+                                >Receiver Name</label
+                            >
+                            <input
+                                type="text"
+                                v-model="selectedParcel.receiverName"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Sender Name</label>
-                    <input
-                        type="text"
-                        v-model="selectedParcel.senderName"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                <div class="mt-4 flex justify-end space-x-3">
+                    <button
+                        @click="showEditModal = false"
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
                     >
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Receiver Name</label>
-                    <input
-                        type="text"
-                        v-model="selectedParcel.receiverName"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        Cancel
+                    </button>
+                    <button
+                        @click="saveParcel"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                     >
+                        Save
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="mt-4 flex justify-end space-x-3">
-            <button
-                @click="showEditModal = false"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-            >
-                Cancel
-            </button>
-            <button
-                @click="saveParcel"
-                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
-                Save
-            </button>
-        </div>
     </div>
-</div>
+</template>
